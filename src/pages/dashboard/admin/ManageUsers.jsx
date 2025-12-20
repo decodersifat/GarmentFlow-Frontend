@@ -13,7 +13,8 @@ const ManageUsers = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [suspendData, setSuspendData] = useState({ suspendReason: '', suspendFeedback: '' });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterRole, setFilterRole] = useState('all');
 
   useEffect(() => {
     fetchUsers();
@@ -29,6 +30,13 @@ const ManageUsers = () => {
       setLoading(false);
     }
   };
+
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRole = filterRole === 'all' || user.role === filterRole;
+    return matchesSearch && matchesRole;
+  });
 
   const handleApprove = async (userId) => {
     try {
@@ -62,30 +70,54 @@ const ManageUsers = () => {
     { key: 'name', label: 'Name' },
     { key: 'email', label: 'Email' },
     { key: 'role', label: 'Role', render: (val) => <span className="capitalize">{val}</span> },
-    { key: 'status', label: 'Status', render: (val) => (
-      <span className={`px-3 py-1 rounded text-white text-sm ${
-        val === 'pending' ? 'bg-yellow-500' :
-        val === 'approved' ? 'bg-green-500' : 'bg-red-500'
-      }`}>{val}</span>
-    )},
-    { key: '_id', label: 'Actions', render: (val, row) => (
-      <div className="flex gap-2">
-        {row.status === 'pending' && (
-          <Button size="sm" variant="success" onClick={() => handleApprove(row._id)}>
-            Approve
+    {
+      key: 'status', label: 'Status', render: (val) => (
+        <span className={`px-3 py-1 rounded text-white text-sm ${val === 'pending' ? 'bg-yellow-500' :
+            val === 'approved' ? 'bg-green-500' : 'bg-red-500'
+          }`}>{val}</span>
+      )
+    },
+    {
+      key: '_id', label: 'Actions', render: (val, row) => (
+        <div className="flex gap-2">
+          {row.status === 'pending' && (
+            <Button size="sm" variant="success" onClick={() => handleApprove(row._id)}>
+              Approve
+            </Button>
+          )}
+          <Button size="sm" variant="danger" onClick={() => { setSelectedUser(row); setShowModal(true); }}>
+            Suspend
           </Button>
-        )}
-        <Button size="sm" variant="danger" onClick={() => { setSelectedUser(row); setShowModal(true); }}>
-          Suspend
-        </Button>
-      </div>
-    )}
+        </div>
+      )
+    }
   ];
 
   return (
     <motion.div className="max-w-6xl mx-auto px-4 py-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       <h1 className="section-title">Manage Users</h1>
-      <Table columns={columns} data={users} loading={loading} />
+
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <input
+          type="text"
+          placeholder="Search by name or email..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="input-field flex-1"
+        />
+        <select
+          value={filterRole}
+          onChange={(e) => setFilterRole(e.target.value)}
+          className="input-field md:w-48"
+        >
+          <option value="all">All Roles</option>
+          <option value="buyer">Buyer</option>
+          <option value="manager">Manager</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <Table columns={columns} data={filteredUsers} loading={loading} />
 
       <Modal
         isOpen={showModal}
@@ -98,13 +130,13 @@ const ManageUsers = () => {
           type="text"
           placeholder="Suspend Reason"
           value={suspendData.suspendReason}
-          onChange={(e) => setSuspendData({...suspendData, suspendReason: e.target.value})}
+          onChange={(e) => setSuspendData({ ...suspendData, suspendReason: e.target.value })}
           className="input-field mb-4"
         />
         <textarea
           placeholder="Feedback Message"
           value={suspendData.suspendFeedback}
-          onChange={(e) => setSuspendData({...suspendData, suspendFeedback: e.target.value})}
+          onChange={(e) => setSuspendData({ ...suspendData, suspendFeedback: e.target.value })}
           rows="4"
           className="input-field"
         ></textarea>

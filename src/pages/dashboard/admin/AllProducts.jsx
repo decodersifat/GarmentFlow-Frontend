@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import API from '../../../config/api';
 import toast from 'react-hot-toast';
 import { FiEdit2, FiTrash } from 'react-icons/fi';
+import Table from '../../../components/Table';
+import LoadingSpinner from '../../../components/LoadingSpinner';
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -45,42 +47,88 @@ const AllProducts = () => {
     }
   };
 
-  if (loading) return <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div></div>;
+  if (loading) return <LoadingSpinner message="Loading products..." />;
+
+  const columns = [
+    { 
+      key: 'image', 
+      label: 'Image', 
+      render: (row) => (
+        <img 
+          src={row.images?.[0] || 'https://via.placeholder.com/50'} 
+          alt={row.name} 
+          className="w-16 h-16 object-cover rounded-lg border border-gray-200" 
+        />
+      )
+    },
+    { key: 'name', label: 'Product Name' },
+    { 
+      key: 'price', 
+      label: 'Price', 
+      render: (val) => <span className="font-semibold text-blue-600">${val}</span>
+    },
+    { 
+      key: 'category', 
+      label: 'Category',
+      render: (val) => <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">{val}</span>
+    },
+    { 
+      key: 'showOnHome', 
+      label: 'Show on Home',
+      render: (val, row) => (
+        <label className="relative inline-flex items-center cursor-pointer">
+          <input 
+            type="checkbox" 
+            checked={row.showOnHome} 
+            onChange={() => handleToggleHome(row)} 
+            className="sr-only peer"
+          />
+          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+        </label>
+      )
+    },
+    { 
+      key: 'actions', 
+      label: 'Actions',
+      render: (val, row) => (
+        <div className="flex gap-3">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+            title="Edit"
+          >
+            <FiEdit2 size={18} />
+          </motion.button>
+          <motion.button
+            onClick={() => handleDelete(row._id)}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+            title="Delete"
+          >
+            <FiTrash size={18} />
+          </motion.button>
+        </div>
+      )
+    }
+  ];
 
   return (
-    <motion.div className="max-w-7xl mx-auto px-4 py-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <h1 className="section-title">All Products</h1>
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-blue-500 text-white">
-              <th className="border p-3 text-left">Image</th>
-              <th className="border p-3 text-left">Name</th>
-              <th className="border p-3 text-left">Price</th>
-              <th className="border p-3 text-left">Category</th>
-              <th className="border p-3 text-left">Show Home</th>
-              <th className="border p-3 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map(product => (
-              <tr key={product._id} className="hover:bg-gray-50">
-                <td className="border p-3"><img src={product.images[0]} alt="" className="w-12 h-12 object-cover rounded" /></td>
-                <td className="border p-3">{product.name}</td>
-                <td className="border p-3">${product.price}</td>
-                <td className="border p-3">{product.category}</td>
-                <td className="border p-3">
-                  <input type="checkbox" checked={product.showOnHome} onChange={() => handleToggleHome(product)} className="w-5 h-5" />
-                </td>
-                <td className="border p-3 flex gap-2">
-                  <button className="text-blue-500 hover:underline"><FiEdit2 size={16} /></button>
-                  <button onClick={() => handleDelete(product._id)} className="text-red-500 hover:underline"><FiTrash size={16} /></button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <motion.div 
+      className="max-w-7xl mx-auto px-4 py-12" 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.h1
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="section-title"
+      >
+        All Products
+      </motion.h1>
+      <Table columns={columns} data={products} loading={loading} />
     </motion.div>
   );
 };

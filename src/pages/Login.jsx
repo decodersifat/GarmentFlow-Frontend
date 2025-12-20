@@ -24,7 +24,7 @@ const Login = () => {
     try {
       const { data } = await API.post('/auth/login', { email, password });
       
-      login(data.user, data.token);
+      login(data.user); // Token is stored in httpOnly cookie by backend
       toast.success('Login successful!');
       navigate('/');
     } catch (error) {
@@ -45,7 +45,7 @@ const Login = () => {
         photoURL: result.user.photoURL
       });
 
-      login(data.user, data.token);
+      login(data.user); // Token is stored in httpOnly cookie by backend
       toast.success('Google login successful!');
       navigate('/');
     } catch (error) {

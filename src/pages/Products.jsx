@@ -66,24 +66,32 @@ const Products = () => {
       <h1 className="section-title">All Products</h1>
 
       {/* Filters */}
-      <div className="mb-8">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center gap-2 text-blue-500 hover:underline mb-4 md:hidden"
+          className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium mb-4 md:hidden px-4 py-2 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
         >
           <FiFilter /> {showFilters ? 'Hide Filters' : 'Show Filters'}
         </button>
 
-        <div className={`grid md:grid-cols-4 gap-4 mb-8 ${!showFilters && 'hidden md:grid'}`}>
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          className={`grid md:grid-cols-4 gap-4 mb-8 bg-gray-50 p-6 rounded-xl ${!showFilters && 'hidden md:grid'}`}
+        >
           {/* Search */}
           <div className="relative md:col-span-1">
-            <FiSearch className="absolute left-3 top-3 text-gray-400" size={20} />
+            <FiSearch className="absolute left-3 top-3.5 text-gray-400" size={20} />
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search products..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="input-field pl-10 w-full"
+              className="input-field pl-10 w-full bg-white"
             />
           </div>
 
@@ -101,15 +109,17 @@ const Products = () => {
           </select>
 
           {/* Price Range */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Price Range: ${priceRange[0]} - ${priceRange[1]}</label>
+          <div className="bg-white p-4 rounded-lg">
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Price Range: <span className="text-blue-600">${priceRange[0]}</span> - <span className="text-blue-600">${priceRange[1]}</span>
+            </label>
             <input
               type="range"
               min="0"
               max="1000"
               value={priceRange[1]}
               onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-              className="w-full"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
             />
           </div>
 
@@ -123,8 +133,8 @@ const Products = () => {
             <option value="price-low">Price: Low to High</option>
             <option value="price-high">Price: High to Low</option>
           </select>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Products Grid */}
       {loading ? (
@@ -165,28 +175,40 @@ const Products = () => {
       )}
 
       {filteredProducts.length === 0 && !loading && (
-        <div className="text-center py-12">
-          <p className="text-gray-600 text-lg">No products found</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-200"
+        >
+          <div className="text-6xl mb-4">🔍</div>
+          <p className="text-gray-700 text-xl font-semibold mb-2">No products found</p>
+          <p className="text-gray-500">Try adjusting your search or filter criteria</p>
+        </motion.div>
       )}
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-8">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex justify-center gap-2 mt-12"
+        >
           {[...Array(totalPages)].map((_, i) => (
-            <button
+            <motion.button
               key={i + 1}
               onClick={() => setCurrentPage(i + 1)}
-              className={`px-4 py-2 rounded transition ${
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                 currentPage === i + 1
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 hover:bg-gray-300'
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-600 hover:text-blue-600 hover:bg-blue-50'
               }`}
             >
               {i + 1}
-            </button>
+            </motion.button>
           ))}
-        </div>
+        </motion.div>
       )}
     </motion.div>
   );

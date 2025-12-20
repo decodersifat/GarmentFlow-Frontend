@@ -45,7 +45,7 @@ const App = () => {
             <div className="flex flex-col min-h-screen">
               <Navbar />
               <main className="flex-1">
-            <Routes>
+                <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
               <Route path="/products" element={<Products />} />
@@ -157,10 +157,42 @@ const App = () => {
               {/* 404 */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-            </main>
-            <Footer />
-          </div>
-          <Toaster position="top-right" />
+              </main>
+              <Footer />
+            </div>
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: '#fff',
+                  color: '#333',
+                  borderRadius: '10px',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                  padding: '16px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                },
+                success: {
+                  iconTheme: {
+                    primary: '#10b981',
+                    secondary: '#fff',
+                  },
+                  style: {
+                    borderLeft: '4px solid #10b981',
+                  },
+                },
+                error: {
+                  iconTheme: {
+                    primary: '#ef4444',
+                    secondary: '#fff',
+                  },
+                  style: {
+                    borderLeft: '4px solid #ef4444',
+                  },
+                },
+              }}
+            />
         </ThemeProvider>
       </AuthProvider>
     </Router>

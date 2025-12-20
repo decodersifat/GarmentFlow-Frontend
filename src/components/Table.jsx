@@ -1,37 +1,49 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import LoadingSpinner from './LoadingSpinner';
 
 const Table = ({ columns, data, loading = false }) => {
   if (loading) {
-    return <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div></div>;
+    return <LoadingSpinner message="Loading data..." />;
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse">
+    <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+      <table className="w-full border-collapse bg-white">
         <thead>
-          <tr className="bg-blue-500 text-white">
+          <tr className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
             {columns.map((col) => (
-              <th key={col.key} className="border p-3 text-left">
+              <th key={col.key} className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
                 {col.label}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-white divide-y divide-gray-200">
           {data.length > 0 ? (
             data.map((row, idx) => (
-              <tr key={idx} className="hover:bg-gray-50">
+              <motion.tr
+                key={idx}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+                className="hover:bg-blue-50 transition-colors"
+              >
                 {columns.map((col) => (
-                  <td key={col.key} className="border p-3">
+                  <td key={col.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     {col.render ? col.render(row[col.key], row) : row[col.key]}
                   </td>
                 ))}
-              </tr>
+              </motion.tr>
             ))
           ) : (
             <tr>
-              <td colSpan={columns.length} className="border p-3 text-center text-gray-600">
-                No data available
+              <td colSpan={columns.length} className="px-6 py-12 text-center">
+                <div className="flex flex-col items-center justify-center">
+                  <div className="text-4xl mb-4">📭</div>
+                  <p className="text-gray-600 text-lg font-medium">No data available</p>
+                  <p className="text-gray-500 text-sm mt-1">Try adjusting your filters or check back later</p>
+                </div>
               </td>
             </tr>
           )}

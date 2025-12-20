@@ -25,11 +25,11 @@ const Alert = ({ type = 'info', message, onClose, autoClose = 5000 }) => {
 
   return (
     <div className={`border rounded-lg p-4 flex items-start gap-3 ${typeStyles[type]}`}>
-      <div className="flex-shrink-0 mt-0.5">{iconMap[type]}</div>
+      <div className="shrink-0 mt-0.5">{iconMap[type]}</div>
       <div className="flex-1">{message}</div>
       <button
         onClick={onClose}
-        className="flex-shrink-0 ml-auto hover:opacity-70"
+        className="shrink-0 ml-auto hover:opacity-70"
       >
         <FiX className="w-5 h-5" />
       </button>

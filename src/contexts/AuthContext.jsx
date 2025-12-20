@@ -1,49 +1,50 @@
 import React, { createContext, useState, useEffect } from 'react';
+import API from '../config/api';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(null);
 
+  // Verify authentication on mount using cookies
   useEffect(() => {
-    // Check localStorage for existing token and user
-    const savedToken = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-
-    if (savedToken) {
-      setToken(savedToken);
-    }
-
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-
-    setLoading(false);
+    verifyAuth();
   }, []);
 
-  const login = (userData, tokenData) => {
-    setUser(userData);
-    setToken(tokenData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', tokenData);
+  const verifyAuth = async () => {
+    try {
+      const { data } = await API.get('/users/current/me');
+      setUser(data);
+    } catch (error) {
+      // No valid cookie/token, user is not authenticated
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+  const login = (userData) => {
+    setUser(userData);
+    // Token is stored in httpOnly cookie by backend, no need to store in frontend
+  };
+
+  const logout = async () => {
+    try {
+      await API.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+    }
   };
 
   const updateUser = (updatedUser) => {
     setUser(updatedUser);
-    localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, updateUser, verifyAuth }}>
       {children}
     </AuthContext.Provider>
   );

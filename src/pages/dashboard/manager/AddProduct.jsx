@@ -57,9 +57,27 @@ const AddProduct = () => {
   };
 
   return (
-    <motion.div className="max-w-4xl mx-auto px-4 py-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <h1 className="section-title">Add New Product</h1>
-      <form onSubmit={handleSubmit} className="card space-y-6">
+    <motion.div
+      className="max-w-4xl mx-auto px-4 py-12"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
+      <motion.h1
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.1 }}
+        className="section-title"
+      >
+        Add New Product
+      </motion.h1>
+      <motion.form
+        onSubmit={handleSubmit}
+        className="card space-y-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
         <div className="grid md:grid-cols-2 gap-4">
           <input type="text" name="name" placeholder="Product Name" value={formData.name} onChange={handleChange} required className="input-field" />
           <select name="category" value={formData.category} onChange={handleChange} className="input-field">
@@ -87,10 +105,23 @@ const AddProduct = () => {
         <div className="flex items-center gap-4">
           <label className="flex items-center gap-2"><input type="checkbox" name="showOnHome" checked={formData.showOnHome} onChange={handleChange} className="w-4 h-4" /> Show on Home Page</label>
         </div>
-        <button type="submit" disabled={loading} className="w-full bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition font-semibold disabled:opacity-50">
-          {loading ? 'Creating...' : 'Create Product'}
-        </button>
-      </form>
+        <motion.button
+          type="submit"
+          disabled={loading}
+          whileHover={{ scale: loading ? 1 : 1.02 }}
+          whileTap={{ scale: loading ? 1 : 0.98 }}
+          className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition font-semibold disabled:opacity-50 shadow-md hover:shadow-lg"
+        >
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              Creating...
+            </span>
+          ) : (
+            'Create Product'
+          )}
+        </motion.button>
+      </motion.form>
     </motion.div>
   );
 };

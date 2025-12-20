@@ -72,28 +72,56 @@ const Contact = () => {
       <h1 className="section-title text-center">Contact Us</h1>
 
       <div className="grid md:grid-cols-2 gap-12 mb-12">
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Get in Touch</h2>
-          <p className="text-gray-600 mb-6">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <h2 className="text-3xl font-bold mb-4 text-gray-900">Get in Touch</h2>
+          <p className="text-gray-600 mb-8 text-lg leading-relaxed">
             Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
           </p>
-          <div className="space-y-4">
-            <div>
-              <p className="font-bold">📧 Email</p>
-              <p className="text-gray-600">support@garmentflow.com</p>
-            </div>
-            <div>
-              <p className="font-bold">📞 Phone</p>
-              <p className="text-gray-600">+1 (555) 123-4567</p>
-            </div>
-            <div>
-              <p className="font-bold">📍 Address</p>
-              <p className="text-gray-600">123 Garment Street, Fashion City, FC 12345</p>
-            </div>
+          <div className="space-y-6">
+            <motion.div
+              whileHover={{ x: 5 }}
+              className="flex items-start gap-4 p-4 bg-blue-50 rounded-lg border border-blue-100"
+            >
+              <div className="text-2xl">📧</div>
+              <div>
+                <p className="font-semibold text-gray-900 mb-1">Email</p>
+                <p className="text-gray-600">support@garmentflow.com</p>
+              </div>
+            </motion.div>
+            <motion.div
+              whileHover={{ x: 5 }}
+              className="flex items-start gap-4 p-4 bg-blue-50 rounded-lg border border-blue-100"
+            >
+              <div className="text-2xl">📞</div>
+              <div>
+                <p className="font-semibold text-gray-900 mb-1">Phone</p>
+                <p className="text-gray-600">+1 (555) 123-4567</p>
+              </div>
+            </motion.div>
+            <motion.div
+              whileHover={{ x: 5 }}
+              className="flex items-start gap-4 p-4 bg-blue-50 rounded-lg border border-blue-100"
+            >
+              <div className="text-2xl">📍</div>
+              <div>
+                <p className="font-semibold text-gray-900 mb-1">Address</p>
+                <p className="text-gray-600">123 Garment Street, Fashion City, FC 12345</p>
+              </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
 
-        <form onSubmit={handleSubmit} className="space-y-0">
+        <motion.form
+          onSubmit={handleSubmit}
+          className="space-y-0 bg-white p-8 rounded-2xl shadow-xl border border-gray-200"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+        >
           <Input
             label="Your Name"
             type="text"
@@ -143,7 +171,7 @@ const Contact = () => {
           >
             {loading ? 'Sending...' : 'Send Message'}
           </Button>
-        </form>
+        </motion.form>
       </div>
     </motion.div>
   );

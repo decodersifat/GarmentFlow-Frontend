@@ -5,6 +5,8 @@ import { useAuth } from '../hooks/useAuth';
 const ProtectedRoute = ({ children, roles }) => {
   const { user, loading } = useAuth();
 
+  // AuthContext verifies authentication via cookies on mount
+  // This handles page reloads automatically
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">

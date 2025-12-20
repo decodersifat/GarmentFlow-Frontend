@@ -92,7 +92,7 @@ const Register = () => {
         photoURL: result.user.photoURL
       });
 
-      login(data.user, data.token);
+      login(data.user); // Token is stored in httpOnly cookie by backend
       toast.success('Registration successful!');
       navigate('/');
     } catch (error) {

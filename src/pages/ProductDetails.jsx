@@ -105,25 +105,56 @@ const ProductDetails = () => {
 
       <div className="grid md:grid-cols-2 gap-12">
         {/* Product Images */}
-        <div>
-          <img
-            src={product.images[0] || 'https://via.placeholder.com/600'}
-            alt={product.name}
-            className="w-full h-96 object-cover rounded-lg shadow-lg"
-          />
-        </div>
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="relative overflow-hidden rounded-2xl shadow-xl border border-gray-200">
+            <img
+              src={product.images[0] || 'https://via.placeholder.com/600'}
+              alt={product.name}
+              className="w-full h-96 object-cover hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+        </motion.div>
 
         {/* Product Info */}
-        <div>
-          <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
-          <p className="text-gray-600 mb-4">{product.description}</p>
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <h1 className="text-4xl font-bold mb-4 text-gray-900">{product.name}</h1>
+          <p className="text-gray-600 mb-6 text-lg leading-relaxed">{product.description}</p>
 
-          <div className="space-y-3 mb-6">
-            <p><strong>Category:</strong> {product.category}</p>
-            <p><strong>Price:</strong> <span className="text-2xl text-blue-600 font-bold">${product.price}</span></p>
-            <p><strong>Available Quantity:</strong> {product.availableQuantity}</p>
-            <p><strong>Minimum Order:</strong> {product.minimumOrderQuantity}</p>
-            <p><strong>Payment Options:</strong> {product.paymentOptions.join(', ')}</p>
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 mb-6 space-y-4 border border-blue-200">
+            <div className="flex items-center justify-between">
+              <span className="text-gray-700 font-medium">Category:</span>
+              <span className="px-3 py-1 bg-blue-600 text-white rounded-full text-sm font-semibold">{product.category}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-700 font-medium">Price:</span>
+              <span className="text-3xl text-blue-600 font-bold">${product.price}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-700 font-medium">Available Quantity:</span>
+              <span className="text-lg font-semibold text-gray-900">{product.availableQuantity} units</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-700 font-medium">Minimum Order:</span>
+              <span className="text-lg font-semibold text-gray-900">{product.minimumOrderQuantity} units</span>
+            </div>
+            <div className="pt-4 border-t border-blue-200">
+              <span className="text-gray-700 font-medium block mb-2">Payment Options:</span>
+              <div className="flex flex-wrap gap-2">
+                {product.paymentOptions.map((option, idx) => (
+                  <span key={idx} className="px-3 py-1 bg-white rounded-lg text-sm font-medium text-gray-700 border border-gray-300">
+                    {option}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
 
           {user && user.role === 'buyer' && (
@@ -145,22 +176,24 @@ const ProductDetails = () => {
           )}
 
           {user && user.role !== 'buyer' && (
-            <div className="bg-yellow-100 border border-yellow-400 p-4 rounded">
-              <p className="text-yellow-800">Only buyers can place orders</p>
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
+              <p className="text-yellow-800 font-medium">Only buyers can place orders</p>
             </div>
           )}
-        </div>
+        </motion.div>
       </div>
 
       {/* Booking Form */}
       {showBookingForm && canOrder && (
         <motion.form
           onSubmit={handleBookingSubmit}
-          className="mt-12 p-8 bg-gray-50 rounded-lg shadow-lg"
-          initial={{ opacity: 0, y: 10 }}
+          className="mt-12 p-8 bg-gradient-to-br from-gray-50 to-white rounded-2xl shadow-xl border border-gray-200"
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          <h2 className="text-2xl font-bold mb-6">Place Order</h2>
+          <h2 className="text-3xl font-bold mb-2 text-gray-900">Place Order</h2>
+          <p className="text-gray-600 mb-8">Fill in the details below to complete your order</p>
 
           <div className="grid md:grid-cols-2 gap-6">
             <input

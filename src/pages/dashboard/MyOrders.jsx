@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import API from '../../config/api';
 import toast from 'react-hot-toast';
 import { FiEye, FiTrash } from 'react-icons/fi';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import Button from '../../components/Button';
+import Table from '../../components/Table';
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -16,9 +19,10 @@ const MyOrders = () => {
   const fetchOrders = async () => {
     try {
       const { data } = await API.get('/orders/user/my-orders');
-      setOrders(data);
+      setOrders(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Failed to load orders');
+      setOrders([]);
     } finally {
       setLoading(false);
     }
@@ -30,66 +34,110 @@ const MyOrders = () => {
       return;
     }
 
-    if (window.confirm('Are you sure you want to cancel this order?')) {
-      try {
-        await API.patch(`/orders/${orderId}/cancel`);
-        toast.success('Order cancelled successfully');
-        fetchOrders();
-      } catch (error) {
-        toast.error('Failed to cancel order');
-      }
+    try {
+      await API.patch(`/orders/${orderId}/cancel`);
+      toast.success('Order cancelled successfully');
+      fetchOrders();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to cancel order');
     }
   };
 
-  if (loading) {
-    return <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div></div>;
-  }
+  if (loading) return <LoadingSpinner />;
+
+  const columns = [
+    { key: 'id', label: 'Order ID', render: (row) => `#${row._id?.slice(-6) || 'N/A'}` },
+    { key: 'product', label: 'Product', render: (row) => row.productName || 'N/A' },
+    { key: 'quantity', label: 'Quantity', render: (row) => row.quantity || 0 },
+    { key: 'price', label: 'Price', render: (row) => `$${row.totalPrice || 0}` },
+    {
+      key: 'status', label: 'Status', render: (row) => (
+        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${row.status === 'Approved' ? 'bg-green-100 text-green-800' :
+            row.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+              row.status === 'Completed' ? 'bg-blue-100 text-blue-800' :
+                'bg-yellow-100 text-yellow-800'
+          }`}>
+          {row.status || 'Unknown'}
+        </span>
+      )
+    },
+    {
+      key: 'actions',
+      label: 'Actions',
+      render: (row) => (
+        <div className="flex gap-2">
+          <Link
+            to={`/dashboard/track-order/${row._id}`}
+            className="text-blue-500 hover:text-blue-700"
+            title="View details"
+          >
+            <FiEye size={18} />
+          </Link>
+          {row.status === 'Pending' && (
+            <button
+              onClick={() => handleCancel(row._id, row.status)}
+              className="text-red-500 hover:text-red-700"
+              title="Cancel order"
+            >
+              <FiTrash size={18} />
+            </button>
+          )}
+        </div>
+      )
+    }
+  ];
 
   return (
-    <motion.div className="max-w-6xl mx-auto px-4 py-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <h1 className="section-title">My Orders</h1>
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-blue-500 text-white">
-              <th className="border p-3 text-left">Order ID</th>
-              <th className="border p-3 text-left">Product</th>
-              <th className="border p-3 text-left">Quantity</th>
-              <th className="border p-3 text-left">Total</th>
-              <th className="border p-3 text-left">Status</th>
-              <th className="border p-3 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.length > 0 ? (
-              orders.map(order => (
-                <tr key={order._id} className="hover:bg-gray-50">
-                  <td className="border p-3">{order.orderId}</td>
-                  <td className="border p-3">{order.productTitle}</td>
-                  <td className="border p-3">{order.quantity}</td>
-                  <td className="border p-3">${order.totalPrice}</td>
-                  <td className="border p-3"><span className={`px-3 py-1 rounded text-white text-sm ${
-                    order.status === 'Pending' ? 'bg-yellow-500' :
-                    order.status === 'Approved' ? 'bg-green-500' :
-                    order.status === 'Rejected' ? 'bg-red-500' : 'bg-gray-500'
-                  }`}>{order.status}</span></td>
-                  <td className="border p-3 flex gap-2">
-                    <Link to={`/dashboard/track-order/${order._id}`} className="text-blue-500 hover:underline flex items-center gap-1">
-                      <FiEye size={16} /> Track
-                    </Link>
-                    {order.status === 'Pending' && (
-                      <button onClick={() => handleCancel(order._id, order.status)} className="text-red-500 hover:underline flex items-center gap-1">
-                        <FiTrash size={16} /> Cancel
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr><td colSpan="6" className="border p-3 text-center text-gray-600">No orders yet</td></tr>
-            )}
-          </tbody>
-        </table>
+    <motion.div
+      className="min-h-screen bg-gray-50 py-12 px-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8"
+        >
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">My Orders</h1>
+          <p className="text-gray-600">View and manage your orders</p>
+        </motion.div>
+
+        {orders.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            className="bg-white rounded-lg shadow-md p-12 text-center"
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: 'spring' }}
+              className="text-6xl mb-4"
+            >
+              📦
+            </motion.div>
+            <p className="text-gray-600 mb-4 text-lg">You haven't placed any orders yet</p>
+            <Link
+              to="/products"
+              className="inline-block bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition transform hover:scale-105 font-semibold"
+            >
+              Browse Products
+            </Link>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="bg-white rounded-lg shadow-md overflow-hidden"
+          >
+            <Table columns={columns} data={orders} />
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );

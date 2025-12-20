@@ -69,13 +69,18 @@ const About = () => {
             Built with input from industry experts, GarmentFlow combines intuitive design with powerful features to handle every aspect of your production process.
           </p>
         </div>
-        <motion.img
-          src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop"
-          alt="About"
-          className="rounded-lg shadow-lg"
-          whileHover={{ scale: 1.05 }}
+        <motion.div
+          className="relative overflow-hidden rounded-2xl shadow-xl"
+          whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.3 }}
-        />
+        >
+          <img
+            src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop"
+            alt="About"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+        </motion.div>
       </motion.div>
 
       {/* Values Section */}
@@ -89,10 +94,12 @@ const About = () => {
           const Icon = value.icon;
           return (
             <motion.div key={index} variants={itemVariants}>
-              <Card className="text-center h-full flex flex-col">
-                <Icon className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-                <h3 className="font-bold text-lg mb-2">{value.title}</h3>
-                <p className="text-gray-600 flex-1">{value.description}</p>
+              <Card className="text-center h-full flex flex-col hover:border-blue-300">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Icon className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="font-bold text-xl mb-3 text-gray-900">{value.title}</h3>
+                <p className="text-gray-600 flex-1 leading-relaxed">{value.description}</p>
               </Card>
             </motion.div>
           );
@@ -101,24 +108,28 @@ const About = () => {
 
       {/* Stats Section */}
       <motion.div
-        className="grid md:grid-cols-4 gap-6 bg-blue-50 p-8 rounded-lg"
+        className="grid md:grid-cols-4 gap-6 bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl border border-blue-200 shadow-lg"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6, duration: 0.6 }}
       >
         {[
-          { number: '500+', label: 'Active Users' },
-          { number: '10K+', label: 'Orders Managed' },
-          { number: '98%', label: 'On-Time Delivery' },
-          { number: '24/7', label: 'Support Available' }
+          { number: '500+', label: 'Active Users', icon: '👥' },
+          { number: '10K+', label: 'Orders Managed', icon: '📦' },
+          { number: '98%', label: 'On-Time Delivery', icon: '✅' },
+          { number: '24/7', label: 'Support Available', icon: '🕐' }
         ].map((stat, index) => (
           <motion.div
             key={index}
-            className="text-center"
-            whileHover={{ scale: 1.05 }}
+            className="text-center p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition"
+            whileHover={{ scale: 1.05, y: -5 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 + index * 0.1 }}
           >
-            <p className="text-3xl font-bold text-blue-600 mb-2">{stat.number}</p>
-            <p className="text-gray-600">{stat.label}</p>
+            <div className="text-4xl mb-3">{stat.icon}</div>
+            <p className="text-4xl font-bold text-blue-600 mb-2">{stat.number}</p>
+            <p className="text-gray-700 font-medium">{stat.label}</p>
           </motion.div>
         ))}
       </motion.div>
