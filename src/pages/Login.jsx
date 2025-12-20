@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 import API from '../config/api';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../config/firebase';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -67,38 +69,34 @@ const Login = () => {
           Welcome Back
         </motion.h2>
 
-        <form onSubmit={handleEmailLogin} className="space-y-4">
-          <div className="relative">
-            <FiMail className="absolute left-3 top-3 text-gray-400" size={20} />
-            <input
-              type="email"
-              placeholder="Email Address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="input-field pl-10"
-            />
-          </div>
+        <form onSubmit={handleEmailLogin} className="space-y-0">
+          <Input
+            label="Email Address"
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-          <div className="relative">
-            <FiLock className="absolute left-3 top-3 text-gray-400" size={20} />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="input-field pl-10"
-            />
-          </div>
+          <Input
+            label="Password"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition font-semibold disabled:opacity-50"
+            variant="primary"
+            size="lg"
+            className="w-full mt-4"
           >
             {loading ? 'Logging in...' : 'Login'}
-          </button>
+          </Button>
         </form>
 
         <div className="relative my-6">
