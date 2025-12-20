@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import Input from '../components/Input';
+import TextArea from '../components/TextArea';
+import Button from '../components/Button';
+import { validateEmail } from '../utils/helpers';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -9,16 +13,53 @@ const Contact = () => {
     subject: '',
     message: ''
   });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error for this field
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
-  const handleSubmit = (e) => {
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
+    if (!validateEmail(formData.email)) newErrors.email = 'Invalid email format';
+    if (!formData.subject.trim()) newErrors.subject = 'Subject is required';
+    if (!formData.message.trim()) newErrors.message = 'Message is required';
+    if (formData.message.length < 10) newErrors.message = 'Message must be at least 10 characters';
+    
+    return newErrors;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success('Message sent successfully! We will get back to you soon.');
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast.success('Message sent successfully! We will get back to you soon.');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setErrors({});
+    } catch (error) {
+      toast.error('Failed to send message. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -52,49 +93,56 @@ const Contact = () => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
+        <form onSubmit={handleSubmit} className="space-y-0">
+          <Input
+            label="Your Name"
             type="text"
             name="name"
             placeholder="Your Name"
             value={formData.name}
             onChange={handleChange}
+            error={errors.name}
             required
-            className="input-field"
           />
-          <input
+          <Input
+            label="Your Email"
             type="email"
             name="email"
-            placeholder="Your Email"
+            placeholder="your@email.com"
             value={formData.email}
             onChange={handleChange}
+            error={errors.email}
             required
-            className="input-field"
           />
-          <input
+          <Input
+            label="Subject"
             type="text"
             name="subject"
-            placeholder="Subject"
+            placeholder="What is this about?"
             value={formData.subject}
             onChange={handleChange}
+            error={errors.subject}
             required
-            className="input-field"
           />
-          <textarea
+          <TextArea
+            label="Your Message"
             name="message"
-            placeholder="Your Message"
+            placeholder="Tell us what you think..."
             rows="5"
             value={formData.message}
             onChange={handleChange}
+            error={errors.message}
             required
-            className="input-field"
-          ></textarea>
-          <button
+          />
+          <Button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition font-semibold"
+            disabled={loading}
+            variant="primary"
+            size="lg"
+            className="w-full"
           >
-            Send Message
-          </button>
+            {loading ? 'Sending...' : 'Send Message'}
+          </Button>
         </form>
       </div>
     </motion.div>
