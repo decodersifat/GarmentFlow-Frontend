@@ -7,6 +7,9 @@ import toast from 'react-hot-toast';
 import API from '../config/api';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../config/firebase';
+import Input from '../components/Input';
+import Select from '../components/Select';
+import Button from '../components/Button';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -113,88 +116,76 @@ const Register = () => {
           Create Account
         </motion.h2>
 
-        <form onSubmit={handleRegister} className="space-y-4">
-          <div className="relative">
-            <FiUser className="absolute left-3 top-3 text-gray-400" size={20} />
-            <input
-              type="text"
-              name="name"
-              placeholder="Full Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="input-field pl-10"
-            />
-          </div>
+        <form onSubmit={handleRegister} className="space-y-0">
+          <Input
+            label="Full Name"
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
 
-          <div className="relative">
-            <FiMail className="absolute left-3 top-3 text-gray-400" size={20} />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email Address"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="input-field pl-10"
-            />
-          </div>
+          <Input
+            label="Email Address"
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
 
-          <div className="relative">
-            <FiLock className="absolute left-3 top-3 text-gray-400" size={20} />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="input-field pl-10"
-            />
-          </div>
+          <Input
+            label="Password"
+            type="password"
+            name="password"
+            placeholder="Password (Min 6 chars, 1 uppercase, 1 lowercase)"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
 
-          <div className="relative">
-            <FiLock className="absolute left-3 top-3 text-gray-400" size={20} />
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              className="input-field pl-10"
-            />
-          </div>
+          <Input
+            label="Confirm Password"
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+          />
 
-          <div className="relative">
-            <FiImage className="absolute left-3 top-3 text-gray-400" size={20} />
-            <input
-              type="url"
-              name="photoURL"
-              placeholder="Photo URL (optional)"
-              value={formData.photoURL}
-              onChange={handleChange}
-              className="input-field pl-10"
-            />
-          </div>
+          <Input
+            label="Photo URL (optional)"
+            type="url"
+            name="photoURL"
+            placeholder="https://example.com/photo.jpg"
+            value={formData.photoURL}
+            onChange={handleChange}
+          />
 
-          <select
+          <Select
+            label="Role"
             name="role"
             value={formData.role}
             onChange={handleChange}
-            className="input-field"
-          >
-            <option value="buyer">Buyer</option>
-            <option value="manager">Manager</option>
-          </select>
+            options={[
+              { value: 'buyer', label: 'Buyer' },
+              { value: 'manager', label: 'Manager' }
+            ]}
+          />
 
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition font-semibold disabled:opacity-50"
+            variant="primary"
+            size="lg"
+            className="w-full mt-4"
           >
             {loading ? 'Creating account...' : 'Register'}
-          </button>
+          </Button>
         </form>
 
         <div className="relative my-6">
