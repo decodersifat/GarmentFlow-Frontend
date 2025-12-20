@@ -1,1 +1,91 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #3b82f6;
+  --primary-dark: #1e40af;
+  --primary-light: #dbeafe;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Source Sans Pro',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1e40af;
+}
+
+/* Utility Classes */
+.btn-primary {
+  @apply bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition;
+}
+
+.btn-danger {
+  @apply bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition;
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition;
+}
+
+.input-field {
+  @apply w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.section-title {
+  @apply text-3xl font-bold text-gray-900 mb-6;
+}
+
+.section-subtitle {
+  @apply text-lg text-gray-600 mb-4;
+}
+
+/* Loading Spinner */
+.spinner {
+  @apply inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500;
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .section-title {
+    @apply text-2xl;
+  }
+  
+  .section-subtitle {
+    @apply text-base;
+  }
+}
