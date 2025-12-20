@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -37,12 +38,13 @@ import ApprovedOrders from './pages/dashboard/manager/ApprovedOrders';
 
 const App = () => {
   return (
-    <Router>
-      <AuthProvider>
-        <ThemeProvider>
-          <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-1">
+    <ErrorBoundary>
+      <Router>
+        <AuthProvider>
+          <ThemeProvider>
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-1">
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
@@ -162,6 +164,7 @@ const App = () => {
         </ThemeProvider>
       </AuthProvider>
     </Router>
+    </ErrorBoundary>
   );
 };
 
