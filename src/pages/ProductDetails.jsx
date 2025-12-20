@@ -59,6 +59,18 @@ const ProductDetails = () => {
       return;
     }
 
+    // Redirect to payment page if Online Payment is selected
+    if (bookingData.paymentMethod === 'Online Payment') {
+      navigate('/payment', {
+        state: {
+          bookingData,
+          product,
+          totalPrice: (parseFloat(product.price) * parseInt(bookingData.quantity)).toFixed(2)
+        }
+      });
+      return;
+    }
+
     try {
       await API.post('/orders', {
         productId: product._id,

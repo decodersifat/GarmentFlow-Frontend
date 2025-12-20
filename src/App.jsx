@@ -18,6 +18,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import Suspended from './pages/Suspended';
+import Payment from './pages/Payment';
 
 // Dashboard
 import Dashboard from './pages/dashboard/Dashboard';
@@ -46,117 +47,125 @@ const App = () => {
               <Navbar />
               <main className="flex-1">
                 <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<Home />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/products/:id" element={<ProductDetails />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/suspended" element={<Suspended />} />
+                  {/* Public Routes */}
+                  <Route path="/" element={<Home />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/products/:id" element={<ProductDetails />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/suspended" element={<Suspended />} />
 
-              {/* Protected Routes */}
-              <Route 
-                path="/dashboard" 
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                } 
-              />
+                  {/* Protected Routes */}
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    }
+                  />
 
-              {/* Buyer Routes */}
-              <Route 
-                path="/dashboard/my-orders" 
-                element={
-                  <ProtectedRoute roles={['buyer']}>
-                    <MyOrders />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/dashboard/track-order/:orderId" 
-                element={
-                  <ProtectedRoute roles={['buyer']}>
-                    <TrackOrder />
-                  </ProtectedRoute>
-                } 
-              />
+                  {/* Buyer Routes */}
+                  <Route
+                    path="/dashboard/my-orders"
+                    element={
+                      <ProtectedRoute roles={['buyer']}>
+                        <MyOrders />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/dashboard/track-order/:orderId"
+                    element={
+                      <ProtectedRoute roles={['buyer']}>
+                        <TrackOrder />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/payment"
+                    element={
+                      <ProtectedRoute roles={['buyer']}>
+                        <Payment />
+                      </ProtectedRoute>
+                    }
+                  />
 
-              {/* Admin Routes */}
-              <Route 
-                path="/dashboard/manage-users" 
-                element={
-                  <ProtectedRoute roles={['admin']}>
-                    <ManageUsers />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/dashboard/admin/all-products" 
-                element={
-                  <ProtectedRoute roles={['admin']}>
-                    <AdminAllProducts />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/dashboard/admin/all-orders" 
-                element={
-                  <ProtectedRoute roles={['admin']}>
-                    <AdminAllOrders />
-                  </ProtectedRoute>
-                } 
-              />
+                  {/* Admin Routes */}
+                  <Route
+                    path="/dashboard/manage-users"
+                    element={
+                      <ProtectedRoute roles={['admin']}>
+                        <ManageUsers />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/dashboard/admin/all-products"
+                    element={
+                      <ProtectedRoute roles={['admin']}>
+                        <AdminAllProducts />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/dashboard/admin/all-orders"
+                    element={
+                      <ProtectedRoute roles={['admin']}>
+                        <AdminAllOrders />
+                      </ProtectedRoute>
+                    }
+                  />
 
-              {/* Manager Routes */}
-              <Route 
-                path="/dashboard/add-product" 
-                element={
-                  <ProtectedRoute roles={['manager']}>
-                    <AddProduct />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/dashboard/manage-products" 
-                element={
-                  <ProtectedRoute roles={['manager']}>
-                    <ManageProducts />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/dashboard/pending-orders" 
-                element={
-                  <ProtectedRoute roles={['manager']}>
-                    <PendingOrders />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/dashboard/approved-orders" 
-                element={
-                  <ProtectedRoute roles={['manager']}>
-                    <ApprovedOrders />
-                  </ProtectedRoute>
-                } 
-              />
+                  {/* Manager Routes */}
+                  <Route
+                    path="/dashboard/add-product"
+                    element={
+                      <ProtectedRoute roles={['manager']}>
+                        <AddProduct />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/dashboard/manage-products"
+                    element={
+                      <ProtectedRoute roles={['manager']}>
+                        <ManageProducts />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/dashboard/pending-orders"
+                    element={
+                      <ProtectedRoute roles={['manager']}>
+                        <PendingOrders />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/dashboard/approved-orders"
+                    element={
+                      <ProtectedRoute roles={['manager']}>
+                        <ApprovedOrders />
+                      </ProtectedRoute>
+                    }
+                  />
 
-              {/* Profile Route - All authenticated users */}
-              <Route 
-                path="/dashboard/profile" 
-                element={
-                  <ProtectedRoute>
-                    <UserProfile />
-                  </ProtectedRoute>
-                } 
-              />
+                  {/* Profile Route - All authenticated users */}
+                  <Route
+                    path="/dashboard/profile"
+                    element={
+                      <ProtectedRoute>
+                        <UserProfile />
+                      </ProtectedRoute>
+                    }
+                  />
 
-              {/* 404 */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+                  {/* 404 */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
               </main>
               <Footer />
             </div>
@@ -193,9 +202,9 @@ const App = () => {
                 },
               }}
             />
-        </ThemeProvider>
-      </AuthProvider>
-    </Router>
+          </ThemeProvider>
+        </AuthProvider>
+      </Router>
     </ErrorBoundary>
   );
 };
