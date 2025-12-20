@@ -5,6 +5,8 @@ import { useAuth } from '../hooks/useAuth';
 import API from '../config/api';
 import toast from 'react-hot-toast';
 import { FiArrowLeft } from 'react-icons/fi';
+import Button from '../components/Button';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -77,11 +79,7 @@ const ProductDetails = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading product details..." />;
   }
 
   if (!product) {
@@ -129,25 +127,20 @@ const ProductDetails = () => {
           </div>
 
           {user && user.role === 'buyer' && (
-            <button
+            <Button
+              variant={user.status === 'approved' ? 'primary' : 'secondary'}
+              size="lg"
               onClick={() => setShowBookingForm(!showBookingForm)}
               disabled={user.status !== 'approved'}
-              className={`w-full py-3 rounded font-semibold transition ${
-                user.status === 'approved'
-                  ? 'bg-blue-500 text-white hover:bg-blue-600'
-                  : 'bg-gray-300 text-gray-600 cursor-not-allowed'
-              }`}
+              className="w-full"
             >
               {user.status === 'approved' ? 'Place Order' : 'Account Not Approved'}
-            </button>
+            </Button>
           )}
 
           {!user && (
-            <a
-              href="/login"
-              className="w-full block bg-blue-500 text-white py-3 rounded font-semibold hover:bg-blue-600 transition text-center"
-            >
-              Login to Order
+            <a href="/login" className="block">
+              <Button variant="primary" size="lg" className="w-full">Login to Order</Button>
             </a>
           )}
 
@@ -273,9 +266,11 @@ const ProductDetails = () => {
 
           <button
             type="submit"
-            className="w-full mt-6 bg-green-500 text-white py-3 rounded font-semibold hover:bg-green-600 transition"
+            className="w-full mt-6"
           >
-            Confirm Order - ${totalPrice.toFixed(2)}
+            <Button variant="success" size="lg" className="w-full">
+              Confirm Order - ${totalPrice.toFixed(2)}
+            </Button>
           </button>
         </motion.form>
       )}
