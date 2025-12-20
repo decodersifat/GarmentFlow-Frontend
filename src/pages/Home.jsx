@@ -4,6 +4,8 @@ import { FiArrowRight, FiCheck, FiStar, FiUsers, FiBox, FiTruck, FiActivity } fr
 import { Link } from 'react-router-dom';
 import API from '../config/api';
 
+import PageTitle from '../components/PageTitle';
+
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -42,6 +44,7 @@ const Home = () => {
 
   return (
     <div className="bg-background overflow-hidden">
+      <PageTitle title="Home" />
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
         {/* Background Elements */}

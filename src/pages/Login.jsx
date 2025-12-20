@@ -9,6 +9,7 @@ import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import PageTitle from '../components/PageTitle';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -23,7 +24,7 @@ const Login = () => {
 
     try {
       const { data } = await API.post('/auth/login', { email, password });
-      
+
       login(data.user); // Token is stored in httpOnly cookie by backend
       toast.success('Login successful!');
       navigate('/');
@@ -38,7 +39,7 @@ const Login = () => {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      
+
       const { data } = await API.post('/auth/google-login', {
         name: result.user.displayName,
         email: result.user.email,
@@ -60,6 +61,7 @@ const Login = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
+      <PageTitle title="Login" />
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
         <motion.h2
           className="text-3xl font-bold text-center mb-6"

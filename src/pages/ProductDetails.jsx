@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { FiArrowLeft } from 'react-icons/fi';
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
+import PageTitle from '../components/PageTitle';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -108,6 +109,7 @@ const ProductDetails = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
+      {product && <PageTitle title={product.name} />}
       <button
         onClick={() => navigate('/products')}
         className="flex items-center gap-2 text-blue-500 hover:underline mb-6"
