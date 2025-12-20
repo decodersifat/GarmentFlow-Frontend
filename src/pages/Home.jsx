@@ -153,7 +153,7 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white dark:bg-secondary-900 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
@@ -182,7 +182,7 @@ const Home = () => {
       </section>
 
       {/* Featured Products */}
-      <section className="py-24 bg-secondary-50">
+      <section className="py-24 bg-secondary-50 dark:bg-secondary-950 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="section-title">Featured Collections</h2>
@@ -248,7 +248,7 @@ const Home = () => {
       </section>
 
       {/* Features Grid */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-white dark:bg-secondary-900 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -298,7 +298,7 @@ const Home = () => {
       </section>
 
       {/* Customer Feedback Carousel */}
-      <section className="py-24 bg-secondary-50">
+      <section className="py-24 bg-secondary-50 dark:bg-secondary-950 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="section-title text-center mb-16">What Our Clients Say</h2>
 
