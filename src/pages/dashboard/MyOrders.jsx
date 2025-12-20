@@ -53,9 +53,9 @@ const MyOrders = () => {
     {
       key: 'status', label: 'Status', render: (row) => (
         <span className={`px-3 py-1 rounded-full text-sm font-semibold ${row.status === 'Approved' ? 'bg-green-100 text-green-800' :
-            row.status === 'Rejected' ? 'bg-red-100 text-red-800' :
-              row.status === 'Completed' ? 'bg-blue-100 text-blue-800' :
-                'bg-yellow-100 text-yellow-800'
+          row.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+            row.status === 'Completed' ? 'bg-blue-100 text-blue-800' :
+              'bg-yellow-100 text-yellow-800'
           }`}>
           {row.status || 'Unknown'}
         </span>
@@ -89,7 +89,7 @@ const MyOrders = () => {
 
   return (
     <motion.div
-      className="min-h-screen bg-gray-50 py-12 px-4"
+      className="min-h-screen bg-gray-50 dark:bg-secondary-950 py-12 px-4 transition-colors duration-300"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
@@ -101,8 +101,8 @@ const MyOrders = () => {
           transition={{ duration: 0.5 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">My Orders</h1>
-          <p className="text-gray-600">View and manage your orders</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">My Orders</h1>
+          <p className="text-gray-600 dark:text-secondary-400">View and manage your orders</p>
         </motion.div>
 
         {orders.length === 0 ? (
@@ -110,7 +110,7 @@ const MyOrders = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
-            className="bg-white rounded-lg shadow-md p-12 text-center"
+            className="bg-white dark:bg-secondary-900 rounded-lg shadow-md p-12 text-center"
           >
             <motion.div
               initial={{ scale: 0 }}
@@ -120,7 +120,7 @@ const MyOrders = () => {
             >
               📦
             </motion.div>
-            <p className="text-gray-600 mb-4 text-lg">You haven't placed any orders yet</p>
+            <p className="text-gray-600 dark:text-secondary-400 mb-4 text-lg">You haven't placed any orders yet</p>
             <Link
               to="/products"
               className="inline-block bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition transform hover:scale-105 font-semibold"
@@ -133,7 +133,7 @@ const MyOrders = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-white rounded-lg shadow-md overflow-hidden"
+            className="bg-white dark:bg-secondary-900 rounded-lg shadow-md overflow-hidden"
           >
             <Table columns={columns} data={orders} />
           </motion.div>
