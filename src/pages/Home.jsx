@@ -288,7 +288,7 @@ const Home = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-tr from-primary-200 to-accent-200 rounded-3xl transform rotate-3 scale-105 opacity-50" />
               <img
-                src="https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?w=800&h=600&fit=crop"
+                src="https://images.unsplash.com/photo-1512418490979-92798cec1380?w=800&h=600&fit=crop"
                 alt="Factory Floor"
                 className="relative rounded-3xl shadow-premium"
               />
