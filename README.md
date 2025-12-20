@@ -1,16 +1,54 @@
-# React + Vite
+# Garments Order & Production Tracker System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Purpose
+A comprehensive web-based platform designed to help small and medium-sized garment factories manage their production workflow. It simplifies the tracking of orders from buyers, manages production stages, monitors inventory, and ensures timely delivery.
 
-Currently, two official plugins are available:
+## Live URL
+[Insert Live Link Here]
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Test Credentials
+To facilitate testing, the following accounts are pre-seeded (run `node seedProducts.js` in backend to create them if missing):
 
-## React Compiler
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Admin** | `admin@example.com` | `password123` |
+| **Manager** | `manager@example.com` | `password123` |
+| **Buyer** | `buyer@example.com` | `password123` |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+> **Note**: New registrations default to `pending` status and require Admin approval. Please use the Admin account to approve new users if you wish to test the registration flow fully.
 
-## Expanding the ESLint configuration
+## Key Features
+-   **Role-Based Access Control**: Secure dashboards for Admin, Manager, and Buyer.
+-   **Real-Time Tracking**: Visual timeline for order production stages.
+-   **Order Management**: Place, approve, reject, and cancel orders.
+-   **Product Management**: Add, update, delete, and feature products.
+-   **User Management**: Admin can approve or suspend users.
+-   **Secure Payments**: Integrated mock payment gateway for online orders.
+-   **Premium UI**: Modern, responsive design with glassmorphism and animations.
+-   **Search & Filter**: Advanced filtering for users and orders.
+-   **Pagination**: Efficient data handling for large lists.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Technologies & Packages
+### Frontend
+-   **React**: UI Library
+-   **Vite**: Build Tool
+-   **Tailwind CSS**: Styling
+-   **Framer Motion**: Animations
+-   **React Router DOM**: Navigation
+-   **React Hot Toast**: Notifications
+-   **React Icons**: Iconography
+-   **Firebase**: Authentication
+
+### Backend
+-   **Node.js & Express**: Server Framework
+-   **MongoDB & Mongoose**: Database
+-   **JWT**: Authentication
+-   **Cors**: Cross-Origin Resource Sharing
+-   **Dotenv**: Environment Variables
+
+## Setup Instructions
+1.  Clone the repository.
+2.  Install dependencies: `npm install` in both `frontend` and `backend`.
+3.  Set up environment variables in `.env` (see `.env.example`).
+4.  Run backend: `npm run dev` in `backend`.
+5.  Run frontend: `npm run dev` in `frontend`.
