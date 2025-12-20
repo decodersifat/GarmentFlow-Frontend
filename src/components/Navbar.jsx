@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { FiMenu, FiX, FiLogOut, FiUser, FiChevronDown } from 'react-icons/fi';
+import { ThemeContext } from '../contexts/ThemeContext';
+import { FiMenu, FiX, FiLogOut, FiUser, FiChevronDown, FiSun, FiMoon } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const { isDark, toggleTheme } = React.useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -53,14 +55,20 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-full text-secondary-600 hover:bg-secondary-100 transition-colors"
+            >
+              {isDark ? <FiSun size={20} /> : <FiMoon size={20} />}
+            </button>
             <div className="flex items-center space-x-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   to={link.path}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${isActive(link.path)
-                      ? 'bg-primary-50 text-primary-600'
-                      : 'text-secondary-600 hover:text-primary-600 hover:bg-secondary-50'
+                    ? 'bg-primary-50 text-primary-600'
+                    : 'text-secondary-600 hover:text-primary-600 hover:bg-secondary-50'
                     }`}
                 >
                   {link.name}
@@ -151,8 +159,8 @@ const Navbar = () => {
                   to={link.path}
                   onClick={toggleMenu}
                   className={`block px-4 py-3 rounded-lg text-base font-medium transition-colors ${isActive(link.path)
-                      ? 'bg-primary-50 text-primary-600'
-                      : 'text-secondary-600 hover:bg-secondary-50'
+                    ? 'bg-primary-50 text-primary-600'
+                    : 'text-secondary-600 hover:bg-secondary-50'
                     }`}
                 >
                   {link.name}
