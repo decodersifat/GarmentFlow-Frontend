@@ -17,6 +17,25 @@ To facilitate testing, the following accounts are pre-seeded (run `node seedProd
 
 > **Note**: New registrations default to `pending` status and require Admin approval. Please use the Admin account to approve new users if you wish to test the registration flow fully.
 
+## Testing Workflow Guide
+To test the full application flow, please follow these steps:
+
+### 1. User Approval Process
+*   **Register**: Create a new account via the Register page. The account status will be `pending`.
+*   **Login as Admin**: Log out and log in with the Admin credentials (`admin@example.com` / `password123`).
+*   **Approve User**: Navigate to **Dashboard > Manage Users**. Find the pending user and click the **Approve** button.
+*   **Test User**: Log back in as the new user. They now have full access based on their role.
+
+### 2. Order Process
+*   **Login as Buyer**: Use the Buyer credentials or an approved new user.
+*   **Place Order**: Go to a product page and place an order. You can choose "Online Payment" to test the mock payment gateway.
+*   **Track Order**: Go to **Dashboard > My Orders** to view the order status.
+
+### 3. Order Management (Manager)
+*   **Login as Manager**: Use the Manager credentials (`manager@example.com` / `password123`).
+*   **Approve Order**: Go to **Dashboard > Pending Orders** to approve new orders.
+*   **Update Tracking**: Go to **Dashboard > Approved Orders** to add tracking updates (e.g., "Shipped").
+
 ## Key Features
 -   **Role-Based Access Control**: Secure dashboards for Admin, Manager, and Buyer.
 -   **Real-Time Tracking**: Visual timeline for order production stages.
