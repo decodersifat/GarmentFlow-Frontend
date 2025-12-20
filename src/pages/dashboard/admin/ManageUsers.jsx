@@ -15,6 +15,7 @@ const ManageUsers = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
+  const [suspendData, setSuspendData] = useState({ suspendReason: '', suspendFeedback: '' });
 
   useEffect(() => {
     fetchUsers();
@@ -73,7 +74,7 @@ const ManageUsers = () => {
     {
       key: 'status', label: 'Status', render: (val) => (
         <span className={`px-3 py-1 rounded text-white text-sm ${val === 'pending' ? 'bg-yellow-500' :
-            val === 'approved' ? 'bg-green-500' : 'bg-red-500'
+          val === 'approved' ? 'bg-green-500' : 'bg-red-500'
           }`}>{val}</span>
       )
     },

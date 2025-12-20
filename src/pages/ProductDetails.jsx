@@ -177,7 +177,7 @@ const ProductDetails = () => {
               disabled={user.status !== 'approved'}
               className="w-full"
             >
-              {user.status === 'approved' ? 'Place Order' : 'Account Not Approved'}
+              {user.status === 'approved' ? 'Place Order' : user.status === 'suspended' ? 'Account Suspended' : 'Account Pending Approval'}
             </Button>
           )}
 
