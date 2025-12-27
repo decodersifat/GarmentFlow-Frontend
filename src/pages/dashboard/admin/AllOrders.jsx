@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import API from '../../../config/api';
 import toast from 'react-hot-toast';
 import { FiEye } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 
 const AllOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -69,9 +70,11 @@ const AllOrders = () => {
                 <td className="border p-3">{order.productId?.name}</td>
                 <td className="border p-3">{order.quantity}</td>
                 <td className="border p-3"><span className={`px-3 py-1 rounded text-white text-sm ${order.status === 'Pending' ? 'bg-yellow-500' :
-                    order.status === 'Approved' ? 'bg-green-500' : 'bg-red-500'
+                  order.status === 'Approved' ? 'bg-green-500' : 'bg-red-500'
                   }`}>{order.status}</span></td>
-                <td className="border p-3"><button className="text-blue-500 hover:underline"><FiEye size={16} /></button></td>
+                <td className="border p-3">
+                  <Link to={`/dashboard/order-details/${order._id}`} className="text-blue-500 hover:underline"><FiEye size={16} /></Link>
+                </td>
               </tr>
             ))}
           </tbody>

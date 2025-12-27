@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import API from '../../../config/api';
 import toast from 'react-hot-toast';
 
@@ -74,8 +75,9 @@ const ApprovedOrders = () => {
                 <td className="border p-3">{order.productId?.name}</td>
                 <td className="border p-3">{order.quantity}</td>
                 <td className="border p-3">{new Date(order.approvedAt).toLocaleDateString()}</td>
-                <td className="border p-3">
-                  <button onClick={() => { setSelectedOrder(order); setShowTrackingForm(true); }} className="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Add Tracking</button>
+                <td className="border p-3 flex gap-2">
+                  <Link to={`/dashboard/track-order/${order._id}`} className="bg-green-500 text-white px-2 py-1 rounded text-sm hover:bg-green-600">View Tracking</Link>
+                  <button onClick={() => { setSelectedOrder(order); setShowTrackingForm(true); }} className="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Add Update</button>
                 </td>
               </tr>
             ))}
@@ -87,7 +89,7 @@ const ApprovedOrders = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
             <h2 className="text-2xl font-bold mb-4">Add Tracking Update</h2>
-            <select value={trackingData.status} onChange={(e) => setTrackingData({...trackingData, status: e.target.value})} className="input-field mb-4">
+            <select value={trackingData.status} onChange={(e) => setTrackingData({ ...trackingData, status: e.target.value })} className="input-field mb-4">
               <option>Cutting Completed</option>
               <option>Sewing Started</option>
               <option>Finishing</option>
@@ -96,8 +98,8 @@ const ApprovedOrders = () => {
               <option>Shipped</option>
               <option>Out for Delivery</option>
             </select>
-            <input type="text" placeholder="Location" value={trackingData.location} onChange={(e) => setTrackingData({...trackingData, location: e.target.value})} className="input-field mb-4" required />
-            <textarea placeholder="Notes" value={trackingData.notes} onChange={(e) => setTrackingData({...trackingData, notes: e.target.value})} rows="3" className="input-field mb-4"></textarea>
+            <input type="text" placeholder="Location" value={trackingData.location} onChange={(e) => setTrackingData({ ...trackingData, location: e.target.value })} className="input-field mb-4" required />
+            <textarea placeholder="Notes" value={trackingData.notes} onChange={(e) => setTrackingData({ ...trackingData, notes: e.target.value })} rows="3" className="input-field mb-4"></textarea>
             <div className="flex gap-4">
               <button onClick={handleAddTracking} className="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Add</button>
               <button onClick={() => setShowTrackingForm(false)} className="flex-1 bg-gray-300 text-gray-800 py-2 rounded hover:bg-gray-400">Cancel</button>

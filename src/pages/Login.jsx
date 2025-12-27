@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { FiMail, FiLock, FiGithub } from 'react-icons/fi';
+import { FiMail, FiLock } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import API from '../config/api';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -15,8 +15,37 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  // Handle redirect result from Google sign-in (fallback method)
+  useEffect(() => {
+    const handleRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result && result.user) {
+          setGoogleLoading(true);
+          const { data } = await API.post('/auth/google-login', {
+            name: result.user.displayName,
+            email: result.user.email,
+            photoURL: result.user.photoURL
+          });
+          login(data);
+          toast.success('Google login successful!');
+          navigate('/');
+        }
+      } catch (error) {
+        console.error('Redirect result error:', error);
+        if (error.code !== 'auth/popup-closed-by-user') {
+          toast.error('Google login failed');
+        }
+      } finally {
+        setGoogleLoading(false);
+      }
+    };
+    handleRedirectResult();
+  }, [login, navigate]);
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
@@ -24,8 +53,7 @@ const Login = () => {
 
     try {
       const { data } = await API.post('/auth/login', { email, password });
-
-      login(data.user); // Token is stored in httpOnly cookie by backend
+      login(data);
       toast.success('Login successful!');
       navigate('/');
     } catch (error) {
@@ -36,21 +64,50 @@ const Login = () => {
   };
 
   const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    });
+
     try {
-      const provider = new GoogleAuthProvider();
+      setGoogleLoading(true);
+
+      // Try popup first
       const result = await signInWithPopup(auth, provider);
 
-      const { data } = await API.post('/auth/google-login', {
-        name: result.user.displayName,
-        email: result.user.email,
-        photoURL: result.user.photoURL
-      });
+      if (result.user) {
+        const { data } = await API.post('/auth/google-login', {
+          name: result.user.displayName,
+          email: result.user.email,
+          photoURL: result.user.photoURL
+        });
 
-      login(data.user); // Token is stored in httpOnly cookie by backend
-      toast.success('Google login successful!');
-      navigate('/');
+        login(data);
+        toast.success('Google login successful!');
+        navigate('/');
+      }
     } catch (error) {
-      toast.error('Google login failed');
+      console.error('Google login error:', error);
+
+      // If popup fails due to COOP or blocking, fall back to redirect
+      if (error.code === 'auth/popup-blocked' ||
+        error.code === 'auth/cancelled-popup-request' ||
+        error.message?.includes('Cross-Origin-Opener-Policy')) {
+        try {
+          toast.loading('Redirecting to Google...', { duration: 2000 });
+          await signInWithRedirect(auth, provider);
+          return; // Page will redirect
+        } catch (redirectError) {
+          console.error('Redirect error:', redirectError);
+          toast.error('Google login failed. Please try again.');
+        }
+      } else if (error.code === 'auth/popup-closed-by-user') {
+        toast.error('Sign in cancelled');
+      } else {
+        toast.error(error.response?.data?.message || 'Google login failed');
+      }
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -92,7 +149,7 @@ const Login = () => {
 
           <Button
             type="submit"
-            disabled={loading}
+            disabled={loading || googleLoading}
             variant="primary"
             size="lg"
             className="w-full mt-4"
@@ -112,10 +169,17 @@ const Login = () => {
 
         <button
           onClick={handleGoogleLogin}
-          className="w-full border border-gray-300 text-gray-700 py-2 rounded hover:bg-gray-50 transition font-semibold mb-3 flex items-center justify-center gap-2"
+          disabled={loading || googleLoading}
+          className="w-full border border-gray-300 text-gray-700 py-2 rounded hover:bg-gray-50 transition font-semibold mb-3 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <img src="https://www.gstatic.com/firebaseapp-ui/images/auth_provider_google.svg" alt="Google" className="w-5 h-5" />
-          Google
+          {googleLoading ? (
+            <span>Connecting...</span>
+          ) : (
+            <>
+              <img src="https://www.gstatic.com/firebaseapp-ui/images/auth_provider_google.svg" alt="Google" className="w-5 h-5" />
+              Google
+            </>
+          )}
         </button>
 
         <p className="text-center text-gray-600 mt-6">

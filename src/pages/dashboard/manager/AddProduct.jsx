@@ -34,6 +34,18 @@ const AddProduct = () => {
     setFormData(prev => ({ ...prev, images: newImages }));
   };
 
+  const handlePaymentOptionChange = (e) => {
+    const { value, checked } = e.target;
+    setFormData(prev => {
+      const currentOptions = prev.paymentOptions;
+      if (checked) {
+        return { ...prev, paymentOptions: [...currentOptions, value] };
+      } else {
+        return { ...prev, paymentOptions: currentOptions.filter(opt => opt !== value) };
+      }
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -102,6 +114,32 @@ const AddProduct = () => {
           ))}
         </div>
         <input type="url" name="demoVideoLink" placeholder="Demo Video Link" value={formData.demoVideoLink} onChange={handleChange} className="input-field" />
+
+        <div>
+          <label className="block font-bold mb-2">Payment Options</label>
+          <div className="flex gap-4">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                value="Cash on Delivery"
+                checked={formData.paymentOptions.includes('Cash on Delivery')}
+                onChange={handlePaymentOptionChange}
+                className="w-4 h-4"
+              />
+              Cash on Delivery
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                value="Online Payment"
+                checked={formData.paymentOptions.includes('Online Payment')}
+                onChange={handlePaymentOptionChange}
+                className="w-4 h-4"
+              />
+              Online Payment
+            </label>
+          </div>
+        </div>
         <div className="flex items-center gap-4">
           <label className="flex items-center gap-2"><input type="checkbox" name="showOnHome" checked={formData.showOnHome} onChange={handleChange} className="w-4 h-4" /> Show on Home Page</label>
         </div>

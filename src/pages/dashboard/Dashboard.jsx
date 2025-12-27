@@ -11,9 +11,9 @@ const Dashboard = () => {
 
   const dashboardLinks = useMemo(() => {
     if (!user?.role) return [];
-    
+
     const baseLinks = [];
-    
+
     if (user.role === 'admin') {
       baseLinks.push(
         { label: 'Manage Users', href: '/dashboard/manage-users', icon: FiUsers },
@@ -33,10 +33,10 @@ const Dashboard = () => {
         { label: 'Track Order', href: '/dashboard/track-order/1', icon: FiTrendingUp }
       );
     }
-    
+
     // Common link for all roles
     baseLinks.push({ label: 'My Profile', href: '/dashboard/profile', icon: FiUsers });
-    
+
     return baseLinks;
   }, [user?.role]);
 
@@ -71,27 +71,27 @@ const Dashboard = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, staggerChildren: 0.1 }}
         >
-          <StatCard 
-            title="Total Orders" 
-            value="24" 
+          <StatCard
+            title="Total Orders"
+            value="24"
             icon={FiShoppingCart}
             trend="+12% this month"
           />
-          <StatCard 
-            title="Revenue" 
-            value="$12,540" 
+          <StatCard
+            title="Revenue"
+            value="$12,540"
             icon={FiTrendingUp}
             trend="+8% this month"
           />
-          <StatCard 
-            title="Products" 
-            value="156" 
+          <StatCard
+            title="Products"
+            value="156"
             icon={FiBarChart2}
             trend="+4 this week"
           />
-          <StatCard 
-            title="Users" 
-            value="892" 
+          <StatCard
+            title="Users"
+            value="892"
             icon={FiUsers}
             trend="+32 this month"
           />

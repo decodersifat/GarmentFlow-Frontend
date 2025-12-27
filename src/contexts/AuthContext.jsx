@@ -13,20 +13,28 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const verifyAuth = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data } = await API.get('/users/current/me');
       setUser(data);
     } catch (error) {
-      // No valid cookie/token, user is not authenticated
+      // Token invalid
+      localStorage.removeItem('token');
       setUser(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const login = (userData) => {
-    setUser(userData);
-    // Token is stored in httpOnly cookie by backend, no need to store in frontend
+  const login = (data) => {
+    // Expecting data to contain { user, token }
+    localStorage.setItem('token', data.token);
+    setUser(data.user);
   };
 
   const logout = async () => {
@@ -35,6 +43,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
+      localStorage.removeItem('token');
       setUser(null);
     }
   };

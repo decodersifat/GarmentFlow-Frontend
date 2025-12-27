@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import API from '../../../config/api';
 import toast from 'react-hot-toast';
 import { FiEdit2, FiTrash } from 'react-icons/fi';
@@ -50,56 +51,58 @@ const AllProducts = () => {
   if (loading) return <LoadingSpinner message="Loading products..." />;
 
   const columns = [
-    { 
-      key: 'image', 
-      label: 'Image', 
-      render: (row) => (
-        <img 
-          src={row.images?.[0] || 'https://via.placeholder.com/50'} 
-          alt={row.name} 
-          className="w-16 h-16 object-cover rounded-lg border border-gray-200" 
+    {
+      key: 'images', // Changed from 'image' to 'images' to match data, though render ignores valid val anyway if getting row from 2nd arg. 
+      // ACTUALLY, checking Table.jsx: col.render(row[col.key], row). 
+      // If I change key to 'images', val will be the array.
+      // But let's stick to the pattern: (val, row) => ...
+      label: 'Image',
+      render: (_, row) => (
+        <img
+          src={row?.images?.[0] || 'https://via.placeholder.com/50'}
+          alt={row?.name || 'Product'}
+          className="w-16 h-16 object-cover rounded-lg border border-gray-200"
         />
       )
     },
     { key: 'name', label: 'Product Name' },
-    { 
-      key: 'price', 
-      label: 'Price', 
+    {
+      key: 'price',
+      label: 'Price',
       render: (val) => <span className="font-semibold text-blue-600">${val}</span>
     },
-    { 
-      key: 'category', 
+    {
+      key: 'category',
       label: 'Category',
       render: (val) => <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">{val}</span>
     },
-    { 
-      key: 'showOnHome', 
+    {
+      key: 'showOnHome',
       label: 'Show on Home',
       render: (val, row) => (
         <label className="relative inline-flex items-center cursor-pointer">
-          <input 
-            type="checkbox" 
-            checked={row.showOnHome} 
-            onChange={() => handleToggleHome(row)} 
+          <input
+            type="checkbox"
+            checked={row.showOnHome}
+            onChange={() => handleToggleHome(row)}
             className="sr-only peer"
           />
           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
         </label>
       )
     },
-    { 
-      key: 'actions', 
+    {
+      key: 'actions',
       label: 'Actions',
       render: (val, row) => (
         <div className="flex gap-3">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+          <Link
+            to={`/dashboard/update-product/${row._id}`}
             className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
             title="Edit"
           >
             <FiEdit2 size={18} />
-          </motion.button>
+          </Link>
           <motion.button
             onClick={() => handleDelete(row._id)}
             whileHover={{ scale: 1.1 }}
@@ -115,8 +118,8 @@ const AllProducts = () => {
   ];
 
   return (
-    <motion.div 
-      className="max-w-7xl mx-auto px-4 py-12" 
+    <motion.div
+      className="max-w-7xl mx-auto px-4 py-12"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}

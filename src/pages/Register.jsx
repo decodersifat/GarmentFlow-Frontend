@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { FiUser, FiMail, FiLock, FiImage, FiGithub } from 'react-icons/fi';
+import { FiUser, FiMail, FiLock, FiImage } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import API from '../config/api';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import Input from '../components/Input';
 import Select from '../components/Select';
 import Button from '../components/Button';
+import PageTitle from '../components/PageTitle';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -21,8 +22,37 @@ const Register = () => {
     role: 'buyer'
   });
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  // Handle redirect result from Google sign-in (fallback method)
+  React.useEffect(() => {
+    const handleRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result && result.user) {
+          setGoogleLoading(true);
+          const { data } = await API.post('/auth/google-login', {
+            name: result.user.displayName,
+            email: result.user.email,
+            photoURL: result.user.photoURL
+          });
+          login(data);
+          toast.success('Registration successful!');
+          navigate('/');
+        }
+      } catch (error) {
+        console.error('Redirect result error:', error);
+        if (error.code !== 'auth/popup-closed-by-user') {
+          toast.error('Google registration failed');
+        }
+      } finally {
+        setGoogleLoading(false);
+      }
+    };
+    handleRedirectResult();
+  }, [login, navigate]);
 
   const validatePassword = (password) => {
     const hasUpperCase = /[A-Z]/.test(password);
@@ -82,21 +112,50 @@ const Register = () => {
   };
 
   const handleGoogleRegister = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      
-      const { data } = await API.post('/auth/google-login', {
-        name: result.user.displayName,
-        email: result.user.email,
-        photoURL: result.user.photoURL
-      });
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    });
 
-      login(data.user); // Token is stored in httpOnly cookie by backend
-      toast.success('Registration successful!');
-      navigate('/');
+    try {
+      setGoogleLoading(true);
+
+      // Try popup first
+      const result = await signInWithPopup(auth, provider);
+
+      if (result.user) {
+        const { data } = await API.post('/auth/google-login', {
+          name: result.user.displayName,
+          email: result.user.email,
+          photoURL: result.user.photoURL
+        });
+
+        login(data);
+        toast.success('Registration successful!');
+        navigate('/');
+      }
     } catch (error) {
-      toast.error('Google registration failed');
+      console.error('Google registration error:', error);
+
+      // If popup fails due to COOP or blocking, fall back to redirect
+      if (error.code === 'auth/popup-blocked' ||
+        error.code === 'auth/cancelled-popup-request' ||
+        error.message?.includes('Cross-Origin-Opener-Policy')) {
+        try {
+          toast.loading('Redirecting to Google...', { duration: 2000 });
+          await signInWithRedirect(auth, provider);
+          return; // Page will redirect
+        } catch (redirectError) {
+          console.error('Redirect error:', redirectError);
+          toast.error('Google registration failed. Please try again.');
+        }
+      } else if (error.code === 'auth/popup-closed-by-user') {
+        toast.error('Sign up cancelled');
+      } else {
+        toast.error(error.response?.data?.message || 'Google registration failed');
+      }
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -107,6 +166,7 @@ const Register = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
+      <PageTitle title="Register" />
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
         <motion.h2
           className="text-3xl font-bold text-center mb-6"
@@ -179,7 +239,7 @@ const Register = () => {
 
           <Button
             type="submit"
-            disabled={loading}
+            disabled={loading || googleLoading}
             variant="primary"
             size="lg"
             className="w-full mt-4"
@@ -199,10 +259,17 @@ const Register = () => {
 
         <button
           onClick={handleGoogleRegister}
-          className="w-full border border-gray-300 text-gray-700 py-2 rounded hover:bg-gray-50 transition font-semibold flex items-center justify-center gap-2"
+          disabled={loading || googleLoading}
+          className="w-full border border-gray-300 text-gray-700 py-2 rounded hover:bg-gray-50 transition font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <img src="https://www.gstatic.com/firebaseapp-ui/images/auth_provider_google.svg" alt="Google" className="w-5 h-5" />
-          Google
+          {googleLoading ? (
+            <span>Connecting...</span>
+          ) : (
+            <>
+              <img src="https://www.gstatic.com/firebaseapp-ui/images/auth_provider_google.svg" alt="Google" className="w-5 h-5" />
+              Google
+            </>
+          )}
         </button>
 
         <p className="text-center text-gray-600 mt-6 text-sm">

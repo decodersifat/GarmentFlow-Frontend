@@ -16,6 +16,8 @@ const ManageUsers = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
   const [suspendData, setSuspendData] = useState({ suspendReason: '', suspendFeedback: '' });
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [newRole, setNewRole] = useState('');
 
   useEffect(() => {
     fetchUsers();
@@ -65,6 +67,17 @@ const ManageUsers = () => {
     }
   };
 
+  const handleRoleUpdate = async () => {
+    try {
+      await API.patch(`/users/${selectedUser._id}/role`, { role: newRole });
+      toast.success('User role updated');
+      setShowRoleModal(false);
+      fetchUsers();
+    } catch (error) {
+      toast.error('Failed to update role');
+    }
+  };
+
   if (loading) return <LoadingSpinner message="Loading users..." />;
 
   const columns = [
@@ -86,6 +99,9 @@ const ManageUsers = () => {
               Approve
             </Button>
           )}
+          <Button size="sm" variant="secondary" onClick={() => { setSelectedUser(row); setNewRole(row.role); setShowRoleModal(true); }}>
+            Role
+          </Button>
           <Button size="sm" variant="danger" onClick={() => { setSelectedUser(row); setShowModal(true); }}>
             Suspend
           </Button>
@@ -141,6 +157,24 @@ const ManageUsers = () => {
           rows="4"
           className="input-field"
         ></textarea>
+      </Modal>
+
+      <Modal
+        isOpen={showRoleModal}
+        title={`Update Role: ${selectedUser?.name}`}
+        onClose={() => setShowRoleModal(false)}
+        onConfirm={handleRoleUpdate}
+        confirmText="Update Role"
+      >
+        <select
+          value={newRole}
+          onChange={(e) => setNewRole(e.target.value)}
+          className="input-field"
+        >
+          <option value="buyer">Buyer</option>
+          <option value="manager">Manager</option>
+          <option value="admin">Admin</option>
+        </select>
       </Modal>
     </motion.div>
   );

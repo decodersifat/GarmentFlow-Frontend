@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import API from '../../../config/api';
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 
 const PendingOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -119,6 +120,12 @@ const PendingOrders = () => {
                     <td className="border p-3">{new Date(order.createdAt).toLocaleDateString()}</td>
                     <td className="border p-3">
                       <div className="flex gap-2">
+                        <Link
+                          to={`/dashboard/order-details/${order._id}`}
+                          className="bg-blue-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-600 transition shadow-md hover:shadow-lg font-semibold"
+                        >
+                          View
+                        </Link>
                         <motion.button
                           onClick={() => handleApprove(order._id)}
                           whileHover={{ scale: 1.05 }}

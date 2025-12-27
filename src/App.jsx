@@ -36,6 +36,8 @@ import AddProduct from './pages/dashboard/manager/AddProduct';
 import ManageProducts from './pages/dashboard/manager/ManageProducts';
 import PendingOrders from './pages/dashboard/manager/PendingOrders';
 import ApprovedOrders from './pages/dashboard/manager/ApprovedOrders';
+import UpdateProduct from './pages/dashboard/common/UpdateProduct';
+import OrderDetails from './pages/dashboard/common/OrderDetails';
 
 const App = () => {
   return (
@@ -149,6 +151,24 @@ const App = () => {
                     element={
                       <ProtectedRoute roles={['manager']}>
                         <ApprovedOrders />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Common Dashboard Routes (Admin & Manager) */}
+                  <Route
+                    path="/dashboard/update-product/:id"
+                    element={
+                      <ProtectedRoute roles={['admin', 'manager']}>
+                        <UpdateProduct />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/dashboard/order-details/:id"
+                    element={
+                      <ProtectedRoute roles={['admin', 'manager']}>
+                        <OrderDetails />
                       </ProtectedRoute>
                     }
                   />
